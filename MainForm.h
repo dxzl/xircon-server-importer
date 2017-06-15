@@ -38,7 +38,7 @@
 //---------------------------------------------------------------------------
 class TFormMain : public TForm
 {
-__published:	// IDE-managed Components
+__published:  // IDE-managed Components
   TPanel *Panel1;
   TButton *ButtonReadMirc;
   TButton *ButtonReadXirc;
@@ -53,7 +53,7 @@ __published:	// IDE-managed Components
   TCheckBox *CheckBoxForcePorts;
   TMaskEdit *MaskEdit1;
   TEdit *Edit1;
-  TButton *Button6;
+  TButton *ButtonDefRegKey;
   TLabel *Label3;
   TGroupBox *GroupBox1;
   TLabel *LinkLabel;
@@ -71,9 +71,9 @@ __published:	// IDE-managed Components
   bool __fastcall ReadXircServers( TStringList *pSl );
   void __fastcall ButtonMergeServersClick(TObject *Sender);
   void __fastcall ButtonEraseXircClick(TObject *Sender);
-  bool __fastcall EraseXircServers( void );
+  void __fastcall EraseXircServers( void );
   void __fastcall ButtonProcessClick(TObject *Sender);
-  void __fastcall Button6Click(TObject *Sender);
+  void __fastcall ButtonDefRegKeyClick(TObject *Sender);
   void __fastcall ButtonHelpClick(TObject *Sender);
   void __fastcall Edit1Change(TObject *Sender);
   void __fastcall ButtonSaveAsClick(TObject *Sender);
@@ -84,9 +84,9 @@ __published:	// IDE-managed Components
   void __fastcall Copy1Click(TObject *Sender);
   void __fastcall Paste1Click(TObject *Sender);
   void __fastcall SelectALL1Click(TObject *Sender);
-private:	// User declarations
+private:  // User declarations
   bool bServersProcessed;
-public:		// User declarations
+public:    // User declarations
   __fastcall TFormMain(TComponent* Owner);
 };
 //---------------------------------------------------------------------------

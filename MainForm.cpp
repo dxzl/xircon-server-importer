@@ -24,7 +24,7 @@ __fastcall TFormMain::TFormMain(TComponent* Owner)
 {
   RegKey = DEFAULT_KEY;
   Edit1->Text = RegKey;
-	FileName = "save1.txt";
+  FileName = "save1.txt";
 
   ButtonReadXirc->Hint = "Load your present XiRcon servers\n"
                     "from the Windows registry into\n"
@@ -56,7 +56,7 @@ void __fastcall TFormMain::ButtonReadMircClick(TObject *Sender)
     OpenDialog1->Options << ofHideReadOnly
     << ofPathMustExist << ofFileMustExist << ofEnableSizing;
 
-    if ( !OpenDialog1->Execute() )
+    if (!OpenDialog1->Execute())
     {
       Memo1->SetFocus();
       return; // Cancel
@@ -64,16 +64,16 @@ void __fastcall TFormMain::ButtonReadMircClick(TObject *Sender)
 
     Memo1->Clear();
 
-		FileName = OpenDialog1->FileName;
+    FileName = OpenDialog1->FileName;
 
     // Load ini file
-    Memo1->Lines->LoadFromFile( FileName );
+    Memo1->Lines->LoadFromFile(FileName);
   }
   catch(...)
   {
-    ShowMessage("Can't load file: \"" + OpenDialog1->FileName + "\"" );
+    ShowMessage("Can't load file: \"" + OpenDialog1->FileName + "\"");
   }
-  
+
   Memo1->SetFocus();
 }
 //---------------------------------------------------------------------------
@@ -88,55 +88,55 @@ void __fastcall TFormMain::ButtonProcessClick(TObject *Sender)
 
   Count = Memo1->Lines->Count;
 
-  for( int ii = 0 ; ii < Count ; ii++ )
+  for(int ii = 0 ; ii < Count ; ii++)
   {
     TempStr = Memo1->Lines->Strings[0].Trim();
     Memo1->Lines->Delete(0); // Delete this line
     TempLower = TempStr.LowerCase();
 
-    if ( !HaveServers )
+    if (!HaveServers)
     {
-      if ( TempLower.Pos( "[servers]" ) != 0 )
+      if (TempLower.Pos("[servers]") != 0)
         HaveServers = true;
     }
     else
     {
-      ServerPosition = TempLower.Pos( "server:" );
-      GroupPosition = TempLower.Pos( "group:" );
+      ServerPosition = TempLower.Pos("server:");
+      GroupPosition = TempLower.Pos("group:");
 
-      if ( ServerPosition && GroupPosition )
+      if (ServerPosition && GroupPosition)
       {
         // Get server string with ports and ":"
-        ServerStr = TempStr.SubString( ServerPosition+7,
+        ServerStr = TempStr.SubString(ServerPosition+7,
              (GroupPosition-ServerPosition)-7);
 
         // Find start of ports, if any
-        PortPosition = ServerStr.Pos( ":" );
+        PortPosition = ServerStr.Pos(":");
 
-        if ( CheckBoxForcePorts->Checked && MaskEdit1->Text.Length() != 0 )
+        if (CheckBoxForcePorts->Checked && MaskEdit1->Text.Length() != 0)
           PortStr = MaskEdit1->Text; // force single port
-        else if ( PortPosition )
+        else if (PortPosition)
         {
-          PortStr = ServerStr.SubString( PortPosition+1,
+          PortStr = ServerStr.SubString(PortPosition+1,
              ((ServerStr.Length()+1)-PortPosition)-1);
         }
         else // no port, no ":"
           PortStr = "";
 
           // Get server string without ports or ":"
-        if ( PortPosition )
-          ServerStr = ServerStr.SubString( 1, PortPosition );
+        if (PortPosition)
+          ServerStr = ServerStr.SubString(1, PortPosition);
 
-        GroupStr = TempStr.SubString( GroupPosition+6,
+        GroupStr = TempStr.SubString(GroupPosition+6,
            ((TempStr.Length()+1)-GroupPosition)-6);
 
         KeyStr = GroupStr.Trim() + "/" + ServerStr.Trim() + PortStr.Trim();
-        Memo1->Lines->Add( KeyStr );
+        Memo1->Lines->Add(KeyStr);
       }
     }
   }
 
-  if ( !HaveServers || Memo1->Lines->Count == 0 )
+  if (!HaveServers || Memo1->Lines->Count == 0)
     ShowMessage("The processed data had an invalid mIRC servers.ini format");
 
   Memo1->SetFocus();
@@ -149,15 +149,11 @@ void __fastcall TFormMain::Edit1Change(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TFormMain::ButtonEraseXircClick(TObject *Sender)
 {
-  if ( EraseXircServers() )
-    ShowMessage("List deleted");
-  else
-    ShowMessage("List could not be deleted");
-
+  EraseXircServers();
   Memo1->SetFocus();
 }
 //---------------------------------------------------------------------------
-bool __fastcall TFormMain::EraseXircServers( void )
+void __fastcall TFormMain::EraseXircServers(void)
 // Delete XiRCON Server list
 {
   TRegistry * MyRegistry = new TRegistry();
@@ -166,22 +162,31 @@ bool __fastcall TFormMain::EraseXircServers( void )
   {
     MyRegistry->RootKey = HKEY_CURRENT_USER;
 
-    try
+    if (!MyRegistry->KeyExists(RegKey))
     {
-      MyRegistry->DeleteKey(RegKey);
+        ShowMessage("There is no list to erase!");
+        return;
     }
-    catch(ERegistryException &E)
+
+    if (MessageBox(Handle, L"Are you sure you want to delete your existing XiRCON servers?",
+          L"XiRCON Server Importer", MB_ICONQUESTION + MB_YESNO + MB_DEFBUTTON2) == IDYES)
     {
-      return false;
+        try
+        {
+          MyRegistry->DeleteKey(RegKey);
+          ShowMessage("List deleted!");
+        }
+        catch(...)
+        {
+          ShowMessage("Unable to erase old server-list!");
+        }
     }
   }
   __finally
   {
-    if ( MyRegistry )
+    if (MyRegistry)
       delete MyRegistry;
   }
-
-  return true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TFormMain::ButtonHelpClick(TObject *Sender)
@@ -199,11 +204,10 @@ void __fastcall TFormMain::ButtonHelpClick(TObject *Sender)
  "Click \"Read XiRCON Servers\" to check the new XiRCON server list.\n"
  "Click \"Save As\" to write whatever is in the edit window to a file.\n"
  "\n"
- "Notes: You will need administrator privileges to run this program.\n"
- "This program was written and tested using Windows XP.\n"
+ "Notes: This program was written/tested on Windows 10.\n"
  "\n"
- "Freeware Chat utility by Scott M. Swift,\n"
- "Original Release 2002. Updated 2013. Post to GitHub 2015.";
+ "Freeware Chat utility by Scott Swift,\n"
+ "Original Release 2002; updated 2013; post to GitHub 2015; update to RAD Studio 2017";
 
   Memo1->SetFocus();
 }
@@ -214,19 +218,21 @@ void __fastcall TFormMain::ButtonReadXircClick(TObject *Sender)
 
   try
   {
-    if ( ReadXircServers( pSl ) )
+    if (ReadXircServers(pSl))
       Memo1->Lines->Assign(pSl);
+    else
+      ShowMessage("XiRCON servers list is empty!");
   }
   __finally
   {
-    if ( pSl )
+    if (pSl)
       delete pSl;
   }
 
   Memo1->SetFocus();
 }
 //---------------------------------------------------------------------------
-bool __fastcall TFormMain::ReadXircServers( TStringList *pSl )
+bool __fastcall TFormMain::ReadXircServers(TStringList *pSl)
 {
   TRegistry * MyRegistry = new TRegistry();
 
@@ -234,65 +240,59 @@ bool __fastcall TFormMain::ReadXircServers( TStringList *pSl )
   {
     MyRegistry->RootKey = HKEY_CURRENT_USER;
 
-    if ( !MyRegistry->OpenKey(RegKey, false) )
-    {
-      ShowMessage("Registry key specified does not exist: ReadXircServers()");
-      return false; // if no key, quit
-    }
+    if (!MyRegistry->OpenKey(RegKey, false))
+    return false; // if no key to read, return false...
 
     // Get Info structure
     TRegKeyInfo rki;
-    if ( !MyRegistry->GetKeyInfo( rki ) )
+    if (!MyRegistry->GetKeyInfo(rki))
     {
-      ShowMessage("Unable to read registry key info: ReadXircServers()");
-      return false;
+    ShowMessage("Unable to read registry key info: ReadXircServers()");
+    return false;
     }
 
     // We handle 001 to 999 (000 is Default)
-    if ( rki.NumValues > 999 )
+    if (rki.NumValues > 999)
     {
-      ShowMessage("XiRCON Server list is full: ReadXircServers()");
-      return false;
+    ShowMessage("XiRCON Server list is full (999 max): ReadXircServers()");
+    return false;
     }
 
     String StrIdx;
     int RegIndex = 1;
 
-    for ( int ii = 0; ii < rki.NumValues && RegIndex < 1000 ; ii++ )
+    for (int ii = 0; ii < rki.NumValues && RegIndex < 1000 ; ii++)
     {
       try
       {
-        StrIdx = String( RegIndex );
+        StrIdx = String(RegIndex);
 
-        if ( RegIndex < 100 )
-          StrIdx.Insert( "0", 1 );
-        if ( RegIndex < 10 )
-          StrIdx.Insert( "0", 1 );
+        if (RegIndex < 100)
+          StrIdx.Insert("0", 1);
+        if (RegIndex < 10)
+          StrIdx.Insert("0", 1);
 
         RegIndex++; // Do this prior to possibly throwing an exception!
 
-        if ( MyRegistry->ValueExists( StrIdx ) )
-          pSl->Add( MyRegistry->ReadString(StrIdx) );
+        if (MyRegistry->ValueExists(StrIdx))
+          pSl->Add(MyRegistry->ReadString(StrIdx));
 
-      } catch(...) {
-      }
+      } catch(...) {}
     }
   }
   __finally
   {
     try {
-      if ( MyRegistry )
+      if (MyRegistry)
         MyRegistry->CloseKey();
-    } catch(...) {
-    }
+    } catch(...) {}
     try {
-      if ( MyRegistry )
+      if (MyRegistry)
         delete MyRegistry;
-    } catch(...) {
-    }
+    } catch(...) {}
   }
 
-  if ( pSl->Count )
+  if (pSl->Count)
     return true;
 
   return false;
@@ -300,7 +300,7 @@ bool __fastcall TFormMain::ReadXircServers( TStringList *pSl )
 //---------------------------------------------------------------------------
 void __fastcall TFormMain::ButtonMergeServersClick(TObject *Sender)
 {
-  if ( Memo1->Lines->Count == 0 )
+  if (Memo1->Lines->Count == 0)
   {
     ShowMessage("No keys to write... first import from mIRC.ini");
     return;
@@ -314,25 +314,25 @@ void __fastcall TFormMain::ButtonMergeServersClick(TObject *Sender)
 
   try
   {
-    if ( !pSlNew || !pSlOld  )
+    if (!pSlNew || !pSlOld )
     {
       ShowMessage("Unable to create string-list!");
       return;
     }
 
     // Purge duplicates from new mIRC Memo1 servers...
-    if ( CheckBoxElimDups->Checked )
+    if (CheckBoxElimDups->Checked)
     {
       pSlNew->Sorted = true;
-	  pSlNew->Duplicates = System::Types::dupIgnore;
-	  pSlOld->Sorted = true;
-	  pSlOld->Duplicates = System::Types::dupIgnore;
-	}
-	else
-	{
-	  pSlNew->Sorted = false;
-	  pSlNew->Duplicates = System::Types::dupAccept;
-	  pSlOld->Sorted = false;
+    pSlNew->Duplicates = System::Types::dupIgnore;
+    pSlOld->Sorted = true;
+    pSlOld->Duplicates = System::Types::dupIgnore;
+  }
+  else
+  {
+    pSlNew->Sorted = false;
+    pSlNew->Duplicates = System::Types::dupAccept;
+    pSlOld->Sorted = false;
       pSlOld->Duplicates = System::Types::dupAccept;
     }
 
@@ -341,20 +341,17 @@ void __fastcall TFormMain::ButtonMergeServersClick(TObject *Sender)
     pSlNew->AddStrings(Memo1->Lines);
 
     // Read existing server-list
-    bool bHaveExisting = ReadXircServers( pSlOld );
+    bool bHaveExisting = ReadXircServers(pSlOld);
 
-    if ( bHaveExisting )
+    if (bHaveExisting)
     {
-      if ( !EraseXircServers() )
-      {
-        ShowMessage("Unable to erase old server-list!");
-        return;
-      }
+      EraseXircServers();
+      Memo1->SetFocus();
     }
 
     MyRegistry->RootKey = HKEY_CURRENT_USER;
 
-    if ( !MyRegistry->OpenKey(RegKey, true) )
+    if (!MyRegistry->OpenKey(RegKey, true))
     {
       ShowMessage("Unable to create registry key!");
       return;
@@ -368,22 +365,22 @@ void __fastcall TFormMain::ButtonMergeServersClick(TObject *Sender)
     String TempStr;
 
     // Start writing merged server-list, up to 999 max
-    for ( ; NewIndex < pSlNew->Count && RegIndex < 1000; NewIndex++ )
+    for (; NewIndex < pSlNew->Count && RegIndex < 1000; NewIndex++)
     {
       try
       {
-        StrIdx = String( RegIndex );
+        StrIdx = String(RegIndex);
 
-        if ( RegIndex < 100 )
-          StrIdx.Insert( "0", 1 );
+        if (RegIndex < 100)
+          StrIdx.Insert("0", 1);
 
-        if ( RegIndex < 10 )
-          StrIdx.Insert( "0", 1 );
+        if (RegIndex < 10)
+          StrIdx.Insert("0", 1);
 
         TempStr = pSlNew->Strings[NewIndex];
 
-        if ( TempStr.Length() )
-          MyRegistry->WriteString( StrIdx, TempStr );
+        if (TempStr.Length())
+          MyRegistry->WriteString(StrIdx, TempStr);
 
         RegIndex++;
       }
@@ -394,26 +391,26 @@ void __fastcall TFormMain::ButtonMergeServersClick(TObject *Sender)
       }
     }
 
-    ShowMessage("Wrote " + String(RegIndex-1) + " total servers!" );
-    if ( pSlNew->Count > 999 )
+    ShowMessage("Wrote " + String(RegIndex-1) + " total servers!");
+    if (pSlNew->Count > 999)
       ShowMessage("Warning, " + String(pSlNew->Count-999) + " server(s)\n"
-          "were not written because list is full..." );
+          "were not written because list is full...");
   }
   __finally
   {
     try {
-      if ( pSlNew != NULL )
+      if (pSlNew != NULL)
         delete pSlNew;
-      if ( pSlOld != NULL )
+      if (pSlOld != NULL)
         delete pSlOld;
     } catch(...) {
     }
     try {
-      if ( MyRegistry != NULL ) MyRegistry->CloseKey();
+      if (MyRegistry != NULL) MyRegistry->CloseKey();
     } catch(...) {
     }
     try {
-      if ( MyRegistry != NULL )
+      if (MyRegistry != NULL)
         delete MyRegistry;
     } catch(...) {
     }
@@ -422,7 +419,7 @@ void __fastcall TFormMain::ButtonMergeServersClick(TObject *Sender)
   Memo1->SetFocus();
 }
 //---------------------------------------------------------------------------
-void __fastcall TFormMain::Button6Click(TObject *Sender)
+void __fastcall TFormMain::ButtonDefRegKeyClick(TObject *Sender)
 {
   RegKey = DEFAULT_KEY;
   Edit1->Text = RegKey;
@@ -444,15 +441,15 @@ void __fastcall TFormMain::ButtonSaveAsClick(TObject *Sender)
         << ofNoReadOnlyReturn;
     SaveDialog1->FileName = FileName;
 
-  	if (SaveDialog1->Execute())
+    if (SaveDialog1->Execute())
     {
       FileName = SaveDialog1->FileName;
-      Memo1->Lines->SaveToFile( FileName );
+      Memo1->Lines->SaveToFile(FileName);
     }
   }
   catch(...)
   {
-    ShowMessage("Can't save file: \"" + SaveDialog1->FileName + "\"" );
+    ShowMessage("Can't save file: \"" + SaveDialog1->FileName + "\"");
   }
 
   Memo1->SetFocus();
@@ -460,7 +457,7 @@ void __fastcall TFormMain::ButtonSaveAsClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TFormMain::CheckBoxForcePortsClick(TObject *Sender)
 {
-  if ( CheckBoxForcePorts->Checked )
+  if (CheckBoxForcePorts->Checked)
     MaskEdit1->Visible = true;
   else
     MaskEdit1->Visible = false;
