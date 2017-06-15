@@ -17,26 +17,26 @@
 #ifndef MainFormH
 #define MainFormH
 //---------------------------------------------------------------------------
-#include <Buttons.hpp>
-#include <Classes.hpp>
-#include <ComCtrls.hpp>
-#include <Controls.hpp>
-#include <Dialogs.hpp>
-#include <ExtCtrls.hpp>
-#include <Menus.hpp>
-#include <OleCtrls.hpp>
-#include <StdCtrls.hpp>
-#include <vcspell3.hpp>
-#include <DdeMan.hpp>
+//#include <Vcl.OleCtrls.hpp>
+//#include <Vcl.DdeMan.hpp>
+#include <Vcl.ComCtrls.hpp>
+#include <Vcl.Controls.hpp>
+#include <Vcl.StdCtrls.hpp>
+#include <Vcl.Forms.hpp>
+#include <Vcl.Dialogs.hpp>
+#include <Vcl.ExtCtrls.hpp>
+#include <Vcl.Mask.hpp>
+#include <Vcl.Buttons.hpp>
+#include <Vcl.Menus.hpp>
+#include <System.Classes.hpp>
 #include <Registry.hpp>
-#include <Mask.hpp>
 //---------------------------------------------------------------------------
 // Registry path to XiRCON's Info
 #define DEFAULT_KEY "\\software\\XiRCON\\1.0\\Default\\Connection\\ServerTree"
 // Web-link for mIRC servers.ini file
-#define MIRC_LINK "http://www.mirc.co.uk/servers.ini"
+#define MIRC_LINK L"http://www.mirc.co.uk/servers.ini"
 //---------------------------------------------------------------------------
-class TXirconForm : public TForm
+class TFormMain : public TForm
 {
 __published:	// IDE-managed Components
   TPanel *Panel1;
@@ -87,9 +87,9 @@ __published:	// IDE-managed Components
 private:	// User declarations
   bool bServersProcessed;
 public:		// User declarations
-  __fastcall TXirconForm(TComponent* Owner);
+  __fastcall TFormMain(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
-extern TXirconForm *XirconForm;
+extern PACKAGE TFormMain *FormMain;
 //---------------------------------------------------------------------------
 #endif

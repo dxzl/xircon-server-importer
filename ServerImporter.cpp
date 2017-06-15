@@ -1,25 +1,38 @@
 //---------------------------------------------------------------------------
-// Copyright 2015 Scott Swift - This program is distributed under the
-// terms of the GNU General Public License.
-//---------------------------------------------------------------------------
+
 #include <vcl.h>
 #pragma hdrstop
-USERES("ServerImporter.res");
-USEFORM("MainForm.cpp", XirconForm);
+#include <tchar.h>
 //---------------------------------------------------------------------------
-WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+#include <Vcl.Styles.hpp>
+#include <Vcl.Themes.hpp>
+USEFORM("MainForm.cpp", FormMain);
+//---------------------------------------------------------------------------
+int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
-  try
-  {
-     Application->Initialize();
-     Application->Title = "Server-Importer";
-     Application->CreateForm(__classid(TXirconForm), &XirconForm);
-     Application->Run();
-  }
-  catch (Exception &exception)
-  {
-     Application->ShowException(&exception);
-  }
-  return 0;
+	try
+	{
+		Application->Initialize();
+		Application->MainFormOnTaskBar = true;
+		TStyleManager::TrySetStyle("Metropolis UI Blue");
+		Application->CreateForm(__classid(TFormMain), &FormMain);
+		Application->Run();
+	}
+	catch (Exception &exception)
+	{
+		Application->ShowException(&exception);
+	}
+	catch (...)
+	{
+		try
+		{
+			throw Exception("");
+		}
+		catch (Exception &exception)
+		{
+			Application->ShowException(&exception);
+		}
+	}
+	return 0;
 }
 //---------------------------------------------------------------------------

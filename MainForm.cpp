@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
-// Copyright 2015 Scott Swift - This program is distributed under the
-// terms of the GNU General Public License.
+// Software by Scott Swift - This program is distributed under the
+// terms of the GNU General Public License. Use and distribute freely.
 //---------------------------------------------------------------------------
 #include <vcl.h>
 #pragma hdrstop
@@ -11,15 +11,15 @@
 #pragma resource "*.dfm"
 
 // By Scott M. Swift www.yahcolorize.com,
-// dxzl@live.com Dec. 29, 2014
+// dxzl@live.com June. 15, 2017
 
-TXirconForm *XirconForm;
+TFormMain *FormMain;
 
 String FileName;
 String RegKey;
 
 //---------------------------------------------------------------------------
-__fastcall TXirconForm::TXirconForm(TComponent* Owner)
+__fastcall TFormMain::TFormMain(TComponent* Owner)
   : TForm(Owner)
 {
   RegKey = DEFAULT_KEY;
@@ -42,7 +42,7 @@ __fastcall TXirconForm::TXirconForm(TComponent* Owner)
   LinkLabel->Caption = "Click For Servers: " + String(MIRC_LINK);
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::ButtonReadMircClick(TObject *Sender)
+void __fastcall TFormMain::ButtonReadMircClick(TObject *Sender)
 {
   try
   {
@@ -77,7 +77,7 @@ void __fastcall TXirconForm::ButtonReadMircClick(TObject *Sender)
   Memo1->SetFocus();
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::ButtonProcessClick(TObject *Sender)
+void __fastcall TFormMain::ButtonProcessClick(TObject *Sender)
 {
   String TempStr, TempLower, ServerStr;
   String GroupStr, KeyStr, PortStr;
@@ -142,12 +142,12 @@ void __fastcall TXirconForm::ButtonProcessClick(TObject *Sender)
   Memo1->SetFocus();
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::Edit1Change(TObject *Sender)
+void __fastcall TFormMain::Edit1Change(TObject *Sender)
 {
   RegKey = Edit1->Text;
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::ButtonEraseXircClick(TObject *Sender)
+void __fastcall TFormMain::ButtonEraseXircClick(TObject *Sender)
 {
   if ( EraseXircServers() )
     ShowMessage("List deleted");
@@ -157,7 +157,7 @@ void __fastcall TXirconForm::ButtonEraseXircClick(TObject *Sender)
   Memo1->SetFocus();
 }
 //---------------------------------------------------------------------------
-bool __fastcall TXirconForm::EraseXircServers( void )
+bool __fastcall TFormMain::EraseXircServers( void )
 // Delete XiRCON Server list
 {
   TRegistry * MyRegistry = new TRegistry();
@@ -184,7 +184,7 @@ bool __fastcall TXirconForm::EraseXircServers( void )
   return true;
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::ButtonHelpClick(TObject *Sender)
+void __fastcall TFormMain::ButtonHelpClick(TObject *Sender)
 {
   Memo1->Lines->Text =
  "To delete this text, right click, choose \"Clear\".\n"
@@ -208,7 +208,7 @@ void __fastcall TXirconForm::ButtonHelpClick(TObject *Sender)
   Memo1->SetFocus();
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::ButtonReadXircClick(TObject *Sender)
+void __fastcall TFormMain::ButtonReadXircClick(TObject *Sender)
 {
   TStringList* pSl = new TStringList();
 
@@ -226,7 +226,7 @@ void __fastcall TXirconForm::ButtonReadXircClick(TObject *Sender)
   Memo1->SetFocus();
 }
 //---------------------------------------------------------------------------
-bool __fastcall TXirconForm::ReadXircServers( TStringList *pSl )
+bool __fastcall TFormMain::ReadXircServers( TStringList *pSl )
 {
   TRegistry * MyRegistry = new TRegistry();
 
@@ -298,7 +298,7 @@ bool __fastcall TXirconForm::ReadXircServers( TStringList *pSl )
   return false;
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::ButtonMergeServersClick(TObject *Sender)
+void __fastcall TFormMain::ButtonMergeServersClick(TObject *Sender)
 {
   if ( Memo1->Lines->Count == 0 )
   {
@@ -324,16 +324,16 @@ void __fastcall TXirconForm::ButtonMergeServersClick(TObject *Sender)
     if ( CheckBoxElimDups->Checked )
     {
       pSlNew->Sorted = true;
-      pSlNew->Duplicates = dupIgnore;
-      pSlOld->Sorted = true;
-      pSlOld->Duplicates = dupIgnore;
-    }
-    else
-    {
-      pSlNew->Sorted = false;
-      pSlNew->Duplicates = dupAccept;
-      pSlOld->Sorted = false;
-      pSlOld->Duplicates = dupAccept;
+	  pSlNew->Duplicates = System::Types::dupIgnore;
+	  pSlOld->Sorted = true;
+	  pSlOld->Duplicates = System::Types::dupIgnore;
+	}
+	else
+	{
+	  pSlNew->Sorted = false;
+	  pSlNew->Duplicates = System::Types::dupAccept;
+	  pSlOld->Sorted = false;
+      pSlOld->Duplicates = System::Types::dupAccept;
     }
 
     // Fill StringList from new servers in Memo1, possibly sorting
@@ -422,14 +422,14 @@ void __fastcall TXirconForm::ButtonMergeServersClick(TObject *Sender)
   Memo1->SetFocus();
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::Button6Click(TObject *Sender)
+void __fastcall TFormMain::Button6Click(TObject *Sender)
 {
   RegKey = DEFAULT_KEY;
   Edit1->Text = RegKey;
   Edit1->SetFocus();
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::ButtonSaveAsClick(TObject *Sender)
+void __fastcall TFormMain::ButtonSaveAsClick(TObject *Sender)
 {
   try
   {
@@ -458,7 +458,7 @@ void __fastcall TXirconForm::ButtonSaveAsClick(TObject *Sender)
   Memo1->SetFocus();
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::CheckBoxForcePortsClick(TObject *Sender)
+void __fastcall TFormMain::CheckBoxForcePortsClick(TObject *Sender)
 {
   if ( CheckBoxForcePorts->Checked )
     MaskEdit1->Visible = true;
@@ -468,36 +468,36 @@ void __fastcall TXirconForm::CheckBoxForcePortsClick(TObject *Sender)
   Memo1->SetFocus();
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::LinkLabelClick(TObject *Sender)
+void __fastcall TFormMain::LinkLabelClick(TObject *Sender)
 {
   // launch default web-browser
   //ShellExecute(Handle, "open", "iexplore.exe",
   //                 Iftf->Strings[INFO_WEB_SITE].c_str(), NULL, SW_SHOW);
-  ShellExecute(NULL, "open", MIRC_LINK, NULL, NULL, SW_SHOWNORMAL);
+  ShellExecute(NULL, L"open", MIRC_LINK, NULL, NULL, SW_SHOWNORMAL);
   Memo1->SetFocus();
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::Clear1Click(TObject *Sender)
+void __fastcall TFormMain::Clear1Click(TObject *Sender)
 {
   Memo1->Clear();
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::Cut1Click(TObject *Sender)
+void __fastcall TFormMain::Cut1Click(TObject *Sender)
 {
   Memo1->CutToClipboard();
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::Copy1Click(TObject *Sender)
+void __fastcall TFormMain::Copy1Click(TObject *Sender)
 {
   Memo1->CopyToClipboard();
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::Paste1Click(TObject *Sender)
+void __fastcall TFormMain::Paste1Click(TObject *Sender)
 {
   Memo1->PasteFromClipboard();
 }
 //---------------------------------------------------------------------------
-void __fastcall TXirconForm::SelectALL1Click(TObject *Sender)
+void __fastcall TFormMain::SelectALL1Click(TObject *Sender)
 {
   Memo1->SelectAll();
 }

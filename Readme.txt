@@ -1,21 +1,11 @@
-Copyright 2015 Scott Swift - This program is distributed under the
-terms of the GNU General Public License.
+Software by Scott Swift 2017 - This program is distributed under the
+terms of the GNU General Public License. Distribute freely.
 
-Use Borland's C++ Builder 4 to compile. The free compiler can probably
-compile it but I've never tried http://edn.embarcadero.com/article/21205
+Use Embarcadero's RAD Studio 10.2 (Tokyo) C++ Builder Free edition to compile.
 
-My C++ Builder Tools->Environment Options Library Path:
-$(BCB)\Lib;
-$(BCB)\Bin;
-$(BCB)\Imports;
-$(BCB)\Projects\Lib;
-$(BCB)\PROJECTS\Bpl;
-
-My ServerImporter Project Include path:
-ServerImporter;$(BCB)\include;$(BCB)\include\vcl
-
-My ServerImporter Project Library path:
-ServerImporter;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Free compiler:
+Embarcadero C++ Builder 10.2 Tokyo Starter Edition
+https://www.embarcadero.com/products/cbuilder/starter/promotional-download
 
 More info and files on the XiRCON IRC Chat Client:
 http://yahcolorize.com/#XiRCON
